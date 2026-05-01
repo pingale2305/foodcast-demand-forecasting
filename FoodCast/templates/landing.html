@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodCast — Smart Food Supply Chain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--orange:#FF6B2B;--orange-dark:#E8561A;--dark:#0F0F0F;--dark2:#1A1A1A;--card:#161616;--border:rgba(255,255,255,0.08);--muted:rgba(255,255,255,0.5)}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:var(--dark);color:#fff;overflow-x:hidden}
+
+        /* noise */
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+        /* glows */
+        .bg-glow{position:fixed;top:-200px;left:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(255,107,43,0.11) 0%,transparent 70%);animation:glow 9s ease-in-out infinite alternate;pointer-events:none;z-index:0}
+        .bg-glow2{position:fixed;bottom:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(46,204,113,0.07) 0%,transparent 70%);animation:glow 11s ease-in-out infinite alternate-reverse;pointer-events:none;z-index:0}
+        @keyframes glow{0%{transform:translate(0,0) scale(1)}100%{transform:translate(70px,50px) scale(1.15)}}
+
+        /* particles */
+        .pt{position:fixed;width:4px;height:4px;background:var(--orange);border-radius:50%;opacity:0;animation:fp linear infinite;pointer-events:none;z-index:0}
+        @keyframes fp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:0.35}90%{opacity:0.08}100%{transform:translateY(-100px) scale(1);opacity:0}}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(10,10,10,0.88);backdrop-filter:blur(22px);border-bottom:1px solid var(--border);animation:slideDown 0.6s ease}
+        @keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        .logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;text-decoration:none;color:#fff;letter-spacing:-0.5px}
+        .logo-dot{width:10px;height:10px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,107,43,0.4)}50%{transform:scale(1.2);box-shadow:0 0 0 6px rgba(255,107,43,0)}}
+        .nav-right{display:flex;align-items:center;gap:16px}
+        .nav-badge{background:rgba(255,107,43,0.12);border:1px solid rgba(255,107,43,0.28);color:var(--orange);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px}
+        .nav-cta{background:var(--orange);color:#fff;font-size:13px;font-weight:700;padding:9px 20px;border-radius:12px;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 16px rgba(255,107,43,0.3)}
+        .nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,43,0.45)}
+
+        /* HERO */
+        .hero{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:110px 60px 60px;gap:60px}
+        .hero-left{animation:fadeLeft 0.8s ease 0.2s both}
+        @keyframes fadeLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+        .hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,43,0.1);border:1px solid rgba(255,107,43,0.25);color:var(--orange);font-size:11px;font-weight:700;padding:6px 16px;border-radius:20px;margin-bottom:26px;letter-spacing:1.5px;text-transform:uppercase}
+        .hero-tag span{width:6px;height:6px;background:var(--orange);border-radius:50%;animation:pulse 1.5s infinite}
+        h1{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,70px);line-height:1.06;font-weight:800;margin-bottom:22px;letter-spacing:-1px}
+        h1 .accent{color:var(--orange);font-style:italic}
+        .hero-desc{font-size:16px;line-height:1.75;color:var(--muted);max-width:450px;margin-bottom:38px}
+        .hero-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+        .btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--orange);color:#fff;font-weight:700;font-size:15px;padding:15px 30px;border-radius:14px;border:none;cursor:pointer;text-decoration:none;transition:all 0.3s;box-shadow:0 8px 28px rgba(255,107,43,0.35)}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(255,107,43,0.5)}
+        .btn-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:15px;font-weight:500;text-decoration:none;transition:color 0.3s}
+        .btn-ghost:hover{color:#fff}
+        .btn-ghost i{font-size:12px;transition:transform 0.3s}
+        .btn-ghost:hover i{transform:translateX(4px)}
+
+        /* stats */
+        .stats-row{display:flex;gap:28px;margin-top:48px;padding-top:36px;border-top:1px solid var(--border)}
+        .stat-num{font-size:26px;font-weight:800;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.55));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .stat-num .u{font-size:15px;color:var(--orange);-webkit-text-fill-color:var(--orange)}
+        .stat-label{font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px}
+
+        /* LOGIN */
+        .hero-right{animation:fadeRight 0.8s ease 0.3s both}
+        @keyframes fadeRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+        .login-card{background:var(--card);border:1px solid var(--border);border-radius:28px;padding:42px 38px;position:relative;overflow:hidden;backdrop-filter:blur(40px)}
+        .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,43,0.6),transparent)}
+        .card-title{font-size:21px;font-weight:700;margin-bottom:5px}
+        .card-sub{font-size:13px;color:var(--muted);margin-bottom:30px}
+        .form-label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+        .iw{position:relative;margin-bottom:18px}
+        .iw i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+        .iw input,.iw select{width:100%;padding:15px 15px 15px 42px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:13px;color:#fff;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;appearance:none}
+        .iw input::placeholder{color:rgba(255,255,255,0.22)}
+        .iw input:focus,.iw select:focus{border-color:var(--orange);background:rgba(255,107,43,0.05);box-shadow:0 0 0 3px rgba(255,107,43,0.1)}
+        .iw select option{background:#1a1a1a;color:#fff}
+        .sa{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+        .btn-login{width:100%;padding:16px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 22px rgba(255,107,43,0.28);margin-top:6px;position:relative;overflow:hidden}
+        .btn-login::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);transition:left 0.5s}
+        .btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,107,43,0.42)}
+        .btn-login:hover::after{left:100%}
+        .flash-error{background:rgba(255,59,59,0.09);border:1px solid rgba(255,59,59,0.28);border-radius:11px;padding:11px 15px;font-size:13px;color:#ff6b6b;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+        /* ── FOOD MARQUEE STRIP ── */
+        .marquee-wrap{position:relative;z-index:1;overflow:hidden;padding:0;background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        .marquee-track{display:flex;gap:14px;padding:14px 0;animation:marqueeScroll 30s linear infinite;width:max-content}
+        .marquee-wrap:hover .marquee-track{animation-play-state:paused}
+        @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .marquee-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 18px;white-space:nowrap;flex-shrink:0;transition:border-color 0.3s}
+        .marquee-item:hover{border-color:rgba(255,107,43,0.3)}
+        .marquee-item img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+        .marquee-item span{font-size:13px;font-weight:600;color:#fff}
+        .marquee-item small{font-size:11px;color:var(--muted);margin-left:4px}
+
+        /* ── OPTION A: FOOD IMAGE GALLERY ── */
+        .food-section{position:relative;z-index:1;padding:90px 60px}
+        .sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--orange);margin-bottom:14px}
+        .sec-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,50px);font-weight:800;line-height:1.1;margin-bottom:46px;max-width:560px}
+
+        .food-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:210px;gap:13px}
+        .fc{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;transition:transform 0.4s,box-shadow 0.4s}
+        .fc:hover{transform:scale(1.03);box-shadow:0 22px 60px rgba(0,0,0,0.65)}
+        .fc.tall{grid-row:span 2}
+        .fc.wide{grid-column:span 2}
+        .fc img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s}
+        .fc:hover img{transform:scale(1.09)}
+        .fc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,transparent 55%);opacity:0;transition:opacity 0.4s;display:flex;align-items:flex-end;padding:18px}
+        .fc:hover .fc-overlay{opacity:1}
+        .fc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,rgba(0,0,0,0.4),transparent)}
+        .fc-pill{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,107,43,0.88);color:#fff;font-size:10px;font-weight:800;padding:4px 11px;border-radius:18px;text-transform:uppercase;letter-spacing:0.5px}
+        .fc-ot{font-size:14px;font-weight:700;color:#fff}
+        .fc-os{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px}
+
+        /* ── OPTION B: SUPPLY CHAIN ANIMATED ── */
+        .chain-section{position:relative;z-index:1;padding:80px 60px;background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        .chain-flow{display:flex;align-items:center;justify-content:center;margin:46px 0;overflow-x:auto;padding-bottom:8px;gap:0}
+        .cn{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;animation:fadeUp 0.6s ease both}
+        .cn:nth-child(1){animation-delay:0.1s}.cn:nth-child(3){animation-delay:0.3s}
+        .cn:nth-child(5){animation-delay:0.5s}.cn:nth-child(7){animation-delay:0.7s}.cn:nth-child(9){animation-delay:0.9s}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        .ci{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--border);position:relative;transition:transform 0.3s}
+        .ci:hover{transform:translateY(-6px)}
+        .ci::before{content:'';position:absolute;inset:-5px;border-radius:24px;border:2px solid currentColor;opacity:0;animation:ring 2.2s ease infinite}
+        @keyframes ring{0%{transform:scale(1);opacity:0.45}100%{transform:scale(1.28);opacity:0}}
+        .ci-farm{background:rgba(46,204,113,0.14);color:#2ecc71;border-color:rgba(46,204,113,0.3)}
+        .ci-sup{background:rgba(255,107,43,0.14);color:var(--orange);border-color:rgba(255,107,43,0.3)}
+        .ci-wh{background:rgba(52,152,219,0.14);color:#3498db;border-color:rgba(52,152,219,0.3)}
+        .ci-res{background:rgba(155,89,182,0.14);color:#9b59b6;border-color:rgba(155,89,182,0.3)}
+        .ci-cust{background:rgba(241,196,15,0.14);color:#f1c40f;border-color:rgba(241,196,15,0.3)}
+        .cn-label{font-size:13px;font-weight:700;text-align:center}
+        .cn-sub{font-size:11px;color:var(--muted);text-align:center}
+        .ca{display:flex;flex-direction:column;align-items:center;padding:0 6px;min-width:60px;margin-bottom:26px}
+        .al{width:50px;height:2px;background:linear-gradient(90deg,var(--orange),rgba(255,107,43,0.15));position:relative}
+        .al::after{content:'▶';position:absolute;right:-8px;top:-7px;color:var(--orange);font-size:11px}
+        .ad{width:7px;height:7px;background:var(--orange);border-radius:50%;animation:md 2s linear infinite;margin-top:-12px;margin-left:-25px}
+        @keyframes md{0%{transform:translateX(0);opacity:1}100%{transform:translateX(50px);opacity:0}}
+        .al2{animation-delay:0.5s}.al3{animation-delay:1s}.al4{animation-delay:1.5s}
+        .a-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:7px}
+
+        /* data metric cards */
+        .dc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:46px}
+        .dc{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 22px;position:relative;overflow:hidden;transition:all 0.3s}
+        .dc:hover{border-color:rgba(255,107,43,0.3);transform:translateY(-4px)}
+        .dc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+        .dc1::before{background:linear-gradient(90deg,var(--orange),transparent)}
+        .dc2::before{background:linear-gradient(90deg,#2ecc71,transparent)}
+        .dc3::before{background:linear-gradient(90deg,#3498db,transparent)}
+        .dc4::before{background:linear-gradient(90deg,#9b59b6,transparent)}
+        .dc-icon{font-size:20px;margin-bottom:12px}
+        .dc-num{font-family:'Playfair Display',serif;font-size:34px;font-weight:800;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .dc-label{font-size:13px;color:var(--muted);margin-top:3px}
+        .dc-sub{font-size:11px;color:var(--orange);margin-top:7px;font-weight:600}
+
+        /* HOW IT WORKS */
+        .how-section{padding:80px 60px;position:relative;z-index:1}
+        .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px}
+        .step-card{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:all 0.4s}
+        .step-card:hover{transform:translateY(-8px);border-color:rgba(255,107,43,0.28);box-shadow:0 24px 56px rgba(0,0,0,0.5)}
+        .step-img{height:175px;position:relative;overflow:hidden}
+        .step-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s}
+        .step-card:hover .step-img img{transform:scale(1.08)}
+        .step-ov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.68))}
+        .step-nb{position:absolute;top:12px;left:16px;font-family:'Playfair Display',serif;font-size:40px;font-weight:800;color:rgba(255,255,255,0.13);line-height:1}
+        .step-body{padding:22px}
+        .step-title{font-size:16px;font-weight:700;margin-bottom:7px}
+        .step-desc{font-size:13px;color:var(--muted);line-height:1.65}
+
+        /* FOOTER */
+        footer{position:relative;z-index:1;padding:38px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .ft{font-size:13px;color:var(--muted)}
+
+        .reveal{opacity:0;transform:translateY(28px);transition:all 0.7s cubic-bezier(0.16,1,0.3,1)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        @media(max-width:900px){
+            nav{padding:15px 22px}
+            .hero{grid-template-columns:1fr;padding:100px 22px 40px}
+            .food-section,.chain-section,.how-section{padding:56px 22px}
+            .food-grid{grid-template-columns:1fr 1fr;grid-auto-rows:180px}
+            .fc.tall{grid-row:span 1}.fc.wide{grid-column:span 2}
+            .dc-grid,.steps-grid{grid-template-columns:1fr 1fr}
+            footer{padding:28px 22px;flex-direction:column;gap:10px;text-align:center}
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-glow2"></div>
+    <div class="pt" style="left:8%;animation-duration:13s;animation-delay:0s"></div>
+    <div class="pt" style="left:24%;animation-duration:19s;animation-delay:3s;width:3px;height:3px"></div>
+    <div class="pt" style="left:58%;animation-duration:15s;animation-delay:6s"></div>
+    <div class="pt" style="left:79%;animation-duration:21s;animation-delay:1s;width:2px;height:2px"></div>
+    <div class="pt" style="left:44%;animation-duration:14s;animation-delay:9s;width:5px;height:5px"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="logo"><div class="logo-dot"></div>FoodCast</a>
+        <div class="nav-right">
+            <div class="nav-badge">Purva Pingale</div>
+            <a href="/predict" class="nav-cta"><i class="fas fa-chart-line" style="margin-right:7px"></i>Start Forecast</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-tag"><span></span>Smart Food Supply Chain</div>
+            <h1>Predict Orders.<br>Cut <span class="accent">Waste.</span><br>Feed More.</h1>
+            <p class="hero-desc">From raw ingredients to the restaurant plate — every meal order forecasted weeks in advance, every supply movement tracked on an immutable blockchain.</p>
+            <div class="hero-cta">
+                <a href="/predict" class="btn-primary"><i class="fas fa-chart-line"></i>Start Forecasting</a>
+                <a href="#how-it-works" class="btn-ghost">See how it works <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="stats-row">
+                <div class="stat"><div class="stat-num">145<span class="u">wk</span></div><div class="stat-label">Training Data</div></div>
+                <div class="stat"><div class="stat-num">50<span class="u">+</span></div><div class="stat-label">Meal Types</div></div>
+                <div class="stat"><div class="stat-num">6.56<span class="u">%</span></div><div class="stat-label">MAPE Error</div></div>
+                <div class="stat"><div class="stat-num">450<span class="u">K</span></div><div class="stat-label">Data Entries</div></div>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="login-card">
+                <div class="card-title">Access Dashboard</div>
+                <div class="card-sub">Select your role and sign in</div>
+                {% with messages = get_flashed_messages() %}{% if messages %}
+                    <div class="flash-error"><i class="fas fa-circle-exclamation"></i> Invalid credentials. Try again.</div>
+                {% endif %}{% endwith %}
+                <form method="POST" action="/login">
+                    <label class="form-label">Your Role</label>
+                    <div class="iw" style="margin-bottom:18px">
+                        <i class="fas fa-user-tie"></i>
+                        <select name="username" required>
+                            <option value="" disabled selected>— Select Role —</option>
+                            <option value="SUPPLIER">🏭  Supplier</option>
+                            <option value="WAREHOUSE">🏢  Warehouse</option>
+                            <option value="RESTAURANT">🍽️  Restaurant</option>
+                        </select>
+                        <i class="fas fa-chevron-down sa"></i>
+                    </div>
+                    <label class="form-label">Password</label>
+                    <div class="iw" style="margin-bottom:6px">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-login"><i class="fas fa-arrow-right-to-bracket" style="margin-right:8px"></i>Sign In</button>
+                </form>
+                <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:16px">Demo password: <strong style="color:rgba(255,255,255,0.65)">12345</strong> &nbsp;·&nbsp; All roles</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOD MARQUEE -->
+    <div class="marquee-wrap">
+        <div class="marquee-track">
+            <!-- First set -->
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=80&q=70" alt=""><span>Beverages</span><small>↑ High demand</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=80&q=70" alt=""><span>Biryani</span><small>📊 Forecasted</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=80&q=70" alt=""><span>Rice Bowl</span><small>↑ 2nd highest</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=80&q=70" alt=""><span>Pizza</span><small>🔥 Weekend spike</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=80&q=70" alt=""><span>Salad</span><small>🌿 Health trend</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&q=70" alt=""><span>Sandwich</span><small>⏰ Lunch staple</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=80&q=70" alt=""><span>Seafood</span><small>🌊 City specific</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1534482421-64566f976cfa?w=80&q=70" alt=""><span>Soup</span><small>❄️ Seasonal</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1551183053-bf91798d453f?w=80&q=70" alt=""><span>Pasta</span><small>🍝 Italian</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=80&q=70" alt=""><span>Starters</span><small>🥗 Popular</small></div>
+            <!-- Duplicate for seamless loop -->
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=80&q=70" alt=""><span>Beverages</span><small>↑ High demand</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=80&q=70" alt=""><span>Biryani</span><small>📊 Forecasted</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=80&q=70" alt=""><span>Rice Bowl</span><small>↑ 2nd highest</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=80&q=70" alt=""><span>Pizza</span><small>🔥 Weekend spike</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=80&q=70" alt=""><span>Salad</span><small>🌿 Health trend</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&q=70" alt=""><span>Sandwich</span><small>⏰ Lunch staple</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=80&q=70" alt=""><span>Seafood</span><small>🌊 City specific</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1534482421-64566f976cfa?w=80&q=70" alt=""><span>Soup</span><small>❄️ Seasonal</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1551183053-bf91798d453f?w=80&q=70" alt=""><span>Pasta</span><small>🍝 Italian</small></div>
+            <div class="marquee-item"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=80&q=70" alt=""><span>Starters</span><small>🥗 Popular</small></div>
+        </div>
+    </div>
+
+    <!-- OPTION A: FOOD IMAGE GALLERY -->
+    <section class="food-section reveal" id="features">
+        <div class="sec-label">What We Forecast</div>
+        <div class="sec-title">50+ food categories.<br>One intelligent system.</div>
+        <div class="food-grid">
+            <div class="fc tall">
+                <div class="fc-pill">Beverages</div>
+                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Beverages</div><div class="fc-os">Highest order volume</div></div></div>
+            </div>
+            <div class="fc">
+                <div class="fc-pill">Biryani</div>
+                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Biryani</div><div class="fc-os">Complex demand patterns</div></div></div>
+            </div>
+            <div class="fc wide">
+                <div class="fc-pill">Rice Bowl</div>
+                <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Rice Bowl</div><div class="fc-os">2nd highest volume category</div></div></div>
+            </div>
+            <div class="fc">
+                <div class="fc-pill">Pizza</div>
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Pizza</div><div class="fc-os">Weekend demand spikes</div></div></div>
+            </div>
+            <div class="fc tall">
+                <div class="fc-pill">Salad</div>
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Salad</div><div class="fc-os">Health trend growth</div></div></div>
+            </div>
+            <div class="fc">
+                <div class="fc-pill">Sandwich</div>
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Sandwich</div><div class="fc-os">Steady lunch demand</div></div></div>
+            </div>
+            <div class="fc wide">
+                <div class="fc-pill">Seafood</div>
+                <img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=800&q=80" alt="">
+                <div class="fc-overlay"><div><div class="fc-ot">Seafood</div><div class="fc-os">Region-specific demand variation</div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OPTION B: SUPPLY CHAIN VISUAL -->
+    <section class="chain-section reveal">
+        <div class="sec-label">Supply Chain</div>
+        <div class="sec-title">Farm to plate — fully connected</div>
+        <div class="chain-flow">
+            <div class="cn"><div class="ci ci-farm"><i class="fas fa-seedling"></i></div><div class="cn-label">Farm</div><div class="cn-sub">Raw ingredients</div></div>
+            <div class="ca"><div class="al"></div><div class="ad"></div><div class="a-lbl">Procure</div></div>
+            <div class="cn"><div class="ci ci-sup"><i class="fas fa-industry"></i></div><div class="cn-label">Supplier</div><div class="cn-sub">Processes & packs</div></div>
+            <div class="ca"><div class="al"></div><div class="ad al2"></div><div class="a-lbl">Dispatch</div></div>
+            <div class="cn"><div class="ci ci-wh"><i class="fas fa-warehouse"></i></div><div class="cn-label">Warehouse</div><div class="cn-sub">Stores & routes</div></div>
+            <div class="ca"><div class="al"></div><div class="ad al3"></div><div class="a-lbl">Deliver</div></div>
+            <div class="cn"><div class="ci ci-res"><i class="fas fa-utensils"></i></div><div class="cn-label">Restaurant</div><div class="cn-sub">Prepares meals</div></div>
+            <div class="ca"><div class="al"></div><div class="ad al4"></div><div class="a-lbl">Serve</div></div>
+            <div class="cn"><div class="ci ci-cust"><i class="fas fa-person"></i></div><div class="cn-label">Customer</div><div class="cn-sub">Gets the meal</div></div>
+        </div>
+        <div class="dc-grid">
+            <div class="dc dc1"><div class="dc-icon">🤖</div><div class="dc-num">94%</div><div class="dc-label">Model Accuracy (R²)</div><div class="dc-sub">GBR + XGBoost Hybrid</div></div>
+            <div class="dc dc2"><div class="dc-icon">📦</div><div class="dc-num">50+</div><div class="dc-label">Meal Categories</div><div class="dc-sub">Tracked & forecasted</div></div>
+            <div class="dc dc3"><div class="dc-icon">🏢</div><div class="dc-num">77</div><div class="dc-label">Fulfillment Centers</div><div class="dc-sub">Type A, B and C</div></div>
+            <div class="dc dc4"><div class="dc-icon">🔗</div><div class="dc-num">100%</div><div class="dc-label">Blockchain Verified</div><div class="dc-sub">SHA-256 Proof-of-Work</div></div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section reveal" id="how-it-works">
+        <div class="sec-label">Workflow</div>
+        <div class="sec-title">How it works</div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-img">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="">
+                    <div class="step-ov"></div><div class="step-nb">01</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-title">Enter Meal Parameters</div>
+                    <div class="step-desc">Food category, cuisine, pricing, promotions and centre details go into the prediction form.</div>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-img">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="">
+                    <div class="step-ov"></div><div class="step-nb">02</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-title">ML Models Predict</div>
+                    <div class="step-desc">GradientBoost and XGBoost run in parallel, outputs averaged into a robust 10-week forecast with an interactive graph.</div>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-img">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80" alt="">
+                    <div class="step-ov"></div><div class="step-nb">03</div>
+                </div>
+                <div class="step-body">
+                    <div class="step-title">Supply Chain Acts</div>
+                    <div class="step-desc">Warehouse alerts Supplier, stock is prepared, Restaurant gets confirmation — all recorded on Blockchain.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <a href="/" class="logo" style="font-size:18px"><div class="logo-dot"></div>FoodCast</a>
+        <div class="ft">Purva Pingale</div>
+        <div class="ft">GBR + XGBoost + Blockchain</div>
+    </footer>
+
+    <script>
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+        }, {threshold: 0.08});
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    </script>
+</body>
+</html>

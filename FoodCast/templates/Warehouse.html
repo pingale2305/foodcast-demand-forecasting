@@ -1,0 +1,112 @@
+{% extends "base_role.html" %}
+{% block title %}Warehouse Dashboard{% endblock %}
+{% block role_color %}#3498db{% endblock %}
+{% block role_icon %}fas fa-warehouse{% endblock %}
+{% block role_name %}Warehouse{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-label">Warehouse Portal</div>
+    <div class="page-title">Warehouse Dashboard</div>
+    <div class="page-sub">Central hub — coordinate Supplier and Restaurant communication</div>
+</div>
+
+<!-- Msg to Supplier -->
+<div class="section-card">
+    <div class="card-header">
+        <div class="card-header-icon"><i class="fas fa-truck-fast"></i></div>
+        <div>
+            <div class="card-header-title">Message to Supplier</div>
+            <div class="card-header-sub">Send restock orders, procurement requests</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/msgtosfwh">
+            <textarea class="msg-textarea" name="mtsfw" placeholder="e.g. — Urgent: Need 200 kg wheat by Friday. Low stock alert triggered..."></textarea>
+            <button class="send-btn" type="submit"><i class="fas fa-paper-plane"></i> Send to Supplier</button>
+        </form>
+    </div>
+</div>
+
+<!-- Msg to Restaurant -->
+<div class="section-card">
+    <div class="card-header">
+        <div class="card-header-icon"><i class="fas fa-utensils"></i></div>
+        <div>
+            <div class="card-header-title">Message to Restaurant</div>
+            <div class="card-header-sub">Dispatch confirmations, delivery schedules</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/msgtorfwh">
+            <textarea class="msg-textarea" name="mtrfw" placeholder="e.g. — Order #1023 dispatched. Delivery expected by 6 PM today..."></textarea>
+            <button class="send-btn" type="submit"><i class="fas fa-paper-plane"></i> Send to Restaurant</button>
+        </form>
+    </div>
+</div>
+
+<!-- Inbox from Supplier -->
+<div class="section-card">
+    <div class="card-header">
+        <div class="card-header-icon" style="background:rgba(46,204,113,0.12);color:#2ecc71"><i class="fas fa-industry"></i></div>
+        <div>
+            <div class="card-header-title">From Supplier</div>
+            <div class="card-header-sub">Dispatch notices and stock availability updates</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="msgs-list">
+            {% if info4 %}
+                {% for key, val in info4.items() %}
+                    <div class="msg-bubble">{{ val['msg'] }}</div>
+                {% endfor %}
+            {% else %}
+                <div class="msg-bubble empty"><i class="fas fa-inbox" style="font-size:20px;margin-bottom:8px;display:block;opacity:0.3"></i>No messages from Supplier yet</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Inbox from Restaurant -->
+<div class="section-card">
+    <div class="card-header">
+        <div class="card-header-icon" style="background:rgba(155,89,182,0.12);color:#9b59b6"><i class="fas fa-bell"></i></div>
+        <div>
+            <div class="card-header-title">From Restaurant</div>
+            <div class="card-header-sub">Demand requests and order confirmations</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="msgs-list">
+            {% if info3 %}
+                {% for key, val in info3.items() %}
+                    <div class="msg-bubble">{{ val['msg'] }}</div>
+                {% endfor %}
+            {% else %}
+                <div class="msg-bubble empty"><i class="fas fa-inbox" style="font-size:20px;margin-bottom:8px;display:block;opacity:0.3"></i>No messages from Restaurant yet</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- To Restaurant log -->
+<div class="section-card">
+    <div class="card-header">
+        <div class="card-header-icon"><i class="fas fa-clock-rotate-left"></i></div>
+        <div>
+            <div class="card-header-title">Sent to Restaurant</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="msgs-list">
+            {% if info2 %}
+                {% for key, val in info2.items() %}
+                    <div class="msg-bubble">{{ val['msg'] }}</div>
+                {% endfor %}
+            {% else %}
+                <div class="msg-bubble empty">No messages sent to Restaurant yet</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
